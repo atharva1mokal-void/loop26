@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Home, Activity, Layers, Settings, ChevronRight } from 'lucide-react';
+import { Home, Activity, Layers, Settings, ChevronRight, Zap, Target } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
@@ -18,72 +18,85 @@ export function Sidebar() {
 
     return (
         <motion.aside
-            initial={{ width: 250 }}
-            animate={{ width: isOpen ? 250 : 80 }}
-            className="h-screen bg-black/40 backdrop-blur-xl border-r border-[var(--glass-border)] relative z-50 flex flex-col"
+            initial={{ width: 260 }}
+            animate={{ width: isOpen ? 260 : 100 }}
+            className="h-screen bg-[#050510] border-r border-white/5 relative z-50 flex flex-col transition-all duration-500 shadow-2xl"
         >
-            <div className="p-6 flex items-center justify-between">
+            {/* Header / Logo */}
+            <div className="p-8 pb-12 flex items-center justify-between">
                 {isOpen && (
-                    <motion.h1
+                    <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        className="text-2xl font-bold bg-gradient-to-r from-[var(--neon-blue)] to-[var(--neon-cyan)] bg-clip-text text-transparent"
+                        className="flex items-center gap-3"
                     >
-                        NEXUS
-                    </motion.h1>
+                        <h1 className="text-2xl font-black tracking-tighter text-blue-500">
+                            NEXUS
+                        </h1>
+                    </motion.div>
                 )}
                 <button
                     onClick={() => setIsOpen(!isOpen)}
-                    className="p-2 hover:bg-[var(--surface-2)] rounded-lg transition-colors"
+                    className="p-1 hover:text-white text-slate-600 transition-colors"
                 >
                     <ChevronRight
-                        className={`w-5 h-5 text-[var(--neon-blue)] transition-transform ${isOpen ? 'rotate-180' : ''
+                        className={`w-5 h-5 transition-transform duration-500 ${isOpen ? 'rotate-180' : ''
                             }`}
                     />
                 </button>
             </div>
 
-            <nav className="flex-1 px-4 space-y-2 mt-8">
+            {/* Main Navigation */}
+            <nav className="flex-1 px-4 space-y-3">
                 {menuItems.map((item) => {
                     const isActive = pathname === item.href;
                     return (
                         <Link key={item.href} href={item.href}>
-                            <div
-                                className={`flex items-center p-3 rounded-xl transition-all duration-300 group cursor-pointer relative overflow-hidden ${isActive ? 'text-white' : 'text-[var(--text-secondary)] hover:text-white'
+                            <motion.div
+                                whileHover={{ x: 4 }}
+                                whileTap={{ scale: 0.98 }}
+                                className={`flex items-center p-4 rounded-2xl transition-all duration-300 group cursor-pointer relative overflow-hidden ${isActive
+                                        ? 'bg-blue-600 text-white shadow-xl shadow-blue-500/30'
+                                        : 'text-slate-500 hover:text-white'
                                     }`}
                             >
-                                {isActive && (
-                                    <motion.div
-                                        layoutId="activeTab"
-                                        className="absolute inset-0 bg-[var(--neon-blue)] opacity-10 rounded-xl"
-                                    />
-                                )}
                                 <item.icon
-                                    className={`w-6 h-6 relative z-10 ${isActive ? 'text-[var(--neon-blue)]' : ''
+                                    className={`w-5 h-5 relative z-10 transition-colors ${isActive ? 'text-white' : 'group-hover:text-blue-400'
                                         }`}
                                 />
                                 {isOpen && (
                                     <motion.span
                                         initial={{ opacity: 0 }}
                                         animate={{ opacity: 1 }}
-                                        className="ml-4 font-medium relative z-10"
+                                        className="ml-4 font-bold text-sm tracking-tight relative z-10"
                                     >
                                         {item.label}
                                     </motion.span>
                                 )}
-                                {/* Hover Glow */}
-                                <div className="absolute inset-0 bg-[var(--neon-blue)] opacity-0 group-hover:opacity-5 transition-opacity" />
-                            </div>
+
+                                {isActive && (
+                                    <motion.div
+                                        layoutId="sidebarActiveBackground"
+                                        className="absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-600 -z-10"
+                                    />
+                                )}
+                            </motion.div>
                         </Link>
                     );
                 })}
             </nav>
 
-            <div className="p-4">
-                <div className="flex items-center p-3 text-[var(--text-secondary)] hover:text-white cursor-pointer rounded-xl hover:bg-[var(--surface-2)] transition-colors">
-                    <Settings className="w-6 h-6" />
-                    {isOpen && <span className="ml-4">Settings</span>}
-                </div>
+            {/* Bottom Section */}
+            <div className="p-6 space-y-8">
+                <Link href="/admin">
+                    <div className="flex items-center gap-4 text-slate-500 hover:text-white cursor-pointer transition-colors group">
+                        <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center font-black group-hover:bg-blue-600/20 group-hover:text-blue-400 transition-all">
+                            N
+                        </div>
+                        {isOpen && <span className="text-sm font-bold tracking-tight">Settings</span>}
+                        {isOpen && <Settings size={14} className="ml-auto opacity-40" />}
+                    </div>
+                </Link>
             </div>
         </motion.aside>
     );

@@ -7,7 +7,11 @@ import { NeuralCore } from '@/components/NeuralCore';
 import { HolographicField } from '@/components/HolographicField';
 import { LiveBackground } from '@/components/LiveBackground';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Zap, Activity, CheckCircle, Clock, Shield, Github, Plus, RefreshCw, Layers, ExternalLink, Globe } from 'lucide-react';
+import {
+  Zap, Activity, CheckCircle, Clock, Shield, Github, Plus,
+  RefreshCw, Layers, ExternalLink, Globe, X, Brain, Target,
+  MessageSquare, Mail, Phone, MapPin, Twitter, Linkedin
+} from 'lucide-react';
 import Link from 'next/link';
 import { Project, Insight } from '@/lib/types';
 
@@ -16,6 +20,7 @@ export default function Home() {
   const [insights, setInsights] = useState<Insight[]>([]);
   const [loading, setLoading] = useState(true);
   const [syncingId, setSyncingId] = useState<string | null>(null);
+  const [showIntelligenceReport, setShowIntelligenceReport] = useState(false);
 
   async function loadData() {
     try {
@@ -69,7 +74,7 @@ export default function Home() {
     }
   }
 
-  const totalTasks = projects.reduce((acc, p) => acc + p.tasks.length, 0);
+  const totalTasks = projects.reduce((acc, p) => acc + (p.tasks?.length || 0), 0);
   const completedTasks = projects.reduce(
     (acc, p) => acc + (p.tasks?.filter((t) => t.status === 'completed').length || 0),
     0
@@ -145,7 +150,7 @@ export default function Home() {
           />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-24">
           {/* Main Command Column */}
           <div className="lg:col-span-8 space-y-8">
             {/* Deployments Stream */}
@@ -193,7 +198,7 @@ export default function Home() {
                             </div>
                           </div>
                           <div className="flex gap-2">
-                            {project.githubRepo && (
+                            {project.githubUrl && (
                               <button
                                 onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleSync(project.id); }}
                                 disabled={syncingId === project.id}
@@ -234,7 +239,7 @@ export default function Home() {
 
           {/* Artificial Intel Column */}
           <div className="lg:col-span-4 space-y-8">
-            <NeuralCore projects={projects} />
+            <NeuralCore projects={projects} onClick={() => setShowIntelligenceReport(true)} />
 
             <section className="bg-slate-900/30 backdrop-blur-xl border border-white/5 rounded-[2.5rem] p-8">
               <h2 className="text-xs font-black text-slate-500 tracking-[0.3em] uppercase mb-6 flex items-center gap-2">
@@ -276,9 +281,163 @@ export default function Home() {
             <VelocityChart />
           </div>
         </div>
+
+        {/* Footer with Contact Info */}
+        <footer className="border-t border-white/5 pt-16 pb-12 opacity-80">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
+            <div className="col-span-1 md:col-span-1">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 bg-purple-600 rounded-xl flex items-center justify-center">
+                  <Layers className="text-white" size={20} />
+                </div>
+                <h4 className="text-white font-black tracking-tight">NEXUS</h4>
+              </div>
+              <p className="text-slate-400 text-sm leading-relaxed mb-6">
+                Advanced Project Intelligence and Operations Command. Synchronize your vision with neural processing.
+              </p>
+              <div className="flex gap-4">
+                <Twitter size={18} className="text-slate-500 hover:text-purple-400 cursor-pointer transition-colors" />
+                <Linkedin size={18} className="text-slate-500 hover:text-purple-400 cursor-pointer transition-colors" />
+                <Github size={18} className="text-slate-500 hover:text-purple-400 cursor-pointer transition-colors" />
+              </div>
+            </div>
+
+            <div>
+              <h5 className="text-[10px] font-black text-white p-2 uppercase tracking-[0.3em] mb-6">Network</h5>
+              <ul className="space-y-4 text-sm text-slate-500 font-bold">
+                <li className="hover:text-white transition-colors cursor-pointer">Intelligence Stream</li>
+                <li className="hover:text-white transition-colors cursor-pointer">Deployments Hub</li>
+                <li className="hover:text-white transition-colors cursor-pointer">Security Protocol</li>
+                <li className="hover:text-white transition-colors cursor-pointer">Neural Documentation</li>
+              </ul>
+            </div>
+
+            <div>
+              <h5 className="text-[10px] font-black text-white p-2 uppercase tracking-[0.3em] mb-6">Support</h5>
+              <ul className="space-y-4 text-sm text-slate-500 font-bold">
+                <li className="hover:text-white transition-colors cursor-pointer text-white">System Status</li>
+                <li className="hover:text-white transition-colors cursor-pointer">API Reference</li>
+                <li className="hover:text-white transition-colors cursor-pointer">Command Center</li>
+                <li className="hover:text-white transition-colors cursor-pointer">Contact Command</li>
+              </ul>
+            </div>
+
+            <div className="bg-slate-900/50 p-8 rounded-[2rem] border border-white/5">
+              <h5 className="text-[10px] font-black text-purple-400 uppercase tracking-[0.3em] mb-6">Contact Nexus</h5>
+              <div className="space-y-6">
+                <div className="flex items-center gap-4 text-sm">
+                  <Mail size={16} className="text-purple-500" />
+                  <span className="text-slate-300">command@nexus-ops.ai</span>
+                </div>
+                <div className="flex items-center gap-4 text-sm">
+                  <Phone size={16} className="text-purple-500" />
+                  <span className="text-slate-300">+91 000-NEXUS-01</span>
+                </div>
+                <div className="flex items-center gap-4 text-sm">
+                  <MapPin size={16} className="text-purple-500" />
+                  <span className="text-slate-300">Orbital Station Beta-7</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="mt-16 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-[10px] font-black text-slate-600 uppercase tracking-[0.2em]">
+              © 2026 NEXUS PROJECT INTELLIGENCE // ATHARVA MOKAL // 0.1β
+            </p>
+            <div className="flex gap-8 text-[10px] font-black text-slate-600 uppercase tracking-[0.2em]">
+              <span>Privacy Policy</span>
+              <span>Terms of Engagement</span>
+            </div>
+          </div>
+        </footer>
       </div>
 
       <HolographicField />
+
+      {/* Neural Intelligence Report Overlay */}
+      <AnimatePresence>
+        {showIntelligenceReport && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowIntelligenceReport(false)}
+              className="absolute inset-0 bg-[#020205]/90 backdrop-blur-2xl"
+            />
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="w-full max-w-4xl bg-slate-900/50 border border-white/10 rounded-[3rem] overflow-hidden relative shadow-2xl shadow-purple-500/10"
+            >
+              <button
+                onClick={() => setShowIntelligenceReport(false)}
+                className="absolute top-8 right-8 p-3 rounded-full bg-white/5 hover:bg-white/10 text-white transition-all z-10"
+              >
+                <X size={24} />
+              </button>
+
+              <div className="p-12">
+                <div className="flex items-center gap-6 mb-12">
+                  <div className="w-20 h-20 rounded-[2rem] bg-gradient-to-br from-purple-500 to-blue-600 flex items-center justify-center shadow-2xl shadow-purple-500/20">
+                    <Brain className="text-white" size={40} />
+                  </div>
+                  <div>
+                    <h2 className="text-4xl font-black text-white tracking-tight">System Intelligence Report</h2>
+                    <p className="text-purple-400 font-bold uppercase tracking-[0.2em] text-xs">Deep Neural Analysis • {new Date().toLocaleDateString()}</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                  <div className="bg-white/5 p-8 rounded-[2rem] border border-white/5">
+                    <Target className="text-purple-400 mb-4" size={32} />
+                    <h4 className="text-xs font-black text-slate-500 uppercase tracking-widest mb-1">Global Progress</h4>
+                    <p className="text-4xl font-black text-white">{completionRate}%</p>
+                    <p className="text-[10px] text-emerald-400 font-bold mt-2 tracking-tighter uppercase">Condition Optimal</p>
+                  </div>
+                  <div className="bg-white/5 p-8 rounded-[2rem] border border-white/5">
+                    <Zap className="text-blue-400 mb-4" size={32} />
+                    <h4 className="text-xs font-black text-slate-500 uppercase tracking-widest mb-1">Processing Load</h4>
+                    <p className="text-4xl font-black text-white">LOW</p>
+                    <p className="text-[10px] text-blue-400 font-bold mt-2 tracking-tighter uppercase">Buffer Capacity 92%</p>
+                  </div>
+                  <div className="bg-white/5 p-8 rounded-[2rem] border border-white/5">
+                    <MessageSquare className="text-pink-400 mb-4" size={32} />
+                    <h4 className="text-xs font-black text-slate-500 uppercase tracking-widest mb-1">AI Confidence</h4>
+                    <p className="text-4xl font-black text-white">99.8</p>
+                    <p className="text-[10px] text-pink-400 font-bold mt-2 tracking-tighter uppercase">High Precision Logic</p>
+                  </div>
+                </div>
+
+                <div className="space-y-6">
+                  <h3 className="text-xs font-black text-slate-500 uppercase tracking-[0.3em]">Project Insights Analysis</h3>
+                  <div className="space-y-4">
+                    {projects.map(p => (
+                      <div key={p.id} className="flex items-center justify-between p-6 bg-white/2 rounded-2xl border border-white/5">
+                        <div className="flex items-center gap-4">
+                          <div className="w-2 h-2 rounded-full bg-purple-500 shadow-[0_0_10px_purple]" />
+                          <span className="font-bold text-white uppercase tracking-widest text-xs">{p.name}</span>
+                        </div>
+                        <span className="text-[10px] font-black text-purple-400 uppercase bg-purple-500/10 px-3 py-1 rounded-full border border-purple-500/20">
+                          {Math.round((p.tasks?.filter(t => t.status === 'completed').length / (p.tasks?.length || 1)) * 100)}% Complete
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="mt-12 p-8 bg-purple-600/10 border border-purple-500/20 rounded-[2rem]">
+                  <p className="text-sm text-purple-200 italic leading-relaxed font-medium">
+                    "AI Observation: Project velocity is trending upward. Recommended action: Maintain current sprint cadence. Mission integrity remains nominal at 100% capacity."
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </main>
   );
 }

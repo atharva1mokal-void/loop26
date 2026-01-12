@@ -6,9 +6,10 @@ import { useState, useEffect } from 'react';
 
 interface NeuralCoreProps {
     projects: Project[];
+    onClick?: () => void;
 }
 
-export function NeuralCore({ projects }: NeuralCoreProps) {
+export function NeuralCore({ projects, onClick }: NeuralCoreProps) {
     const [currentScan, setCurrentScan] = useState('');
     const [activeAngle, setActiveAngle] = useState(0);
 
@@ -29,13 +30,18 @@ export function NeuralCore({ projects }: NeuralCoreProps) {
     }, []);
 
     return (
-        <div className="bg-slate-900/40 backdrop-blur-xl border border-white/5 rounded-[2.5rem] p-10 relative overflow-hidden flex flex-col items-center justify-center text-center group">
+        <motion.div
+            whileHover={{ scale: 1.02, backgroundColor: 'rgba(255,255,255,0.02)' }}
+            whileTap={{ scale: 0.98 }}
+            onClick={onClick}
+            className="bg-slate-900/40 backdrop-blur-xl border border-white/5 rounded-[2.5rem] p-10 relative overflow-hidden flex flex-col items-center justify-center text-center group cursor-pointer shadow-2xl shadow-purple-500/5"
+        >
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(147,51,234,0.1)_0%,transparent_70%)]" />
 
             <div className="relative w-48 h-48 mb-8">
                 {/* Outer Scanning Ring */}
                 <motion.div
-                    className="absolute inset-0 border-t-2 border-l-2 border-purple-500/30 rounded-full"
+                    className="absolute inset-0 border-t-2 border-l-2 border-purple-500/30 rounded-full group-hover:border-purple-500 transition-colors duration-500"
                     animate={{ rotate: 360 }}
                     transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
                 />
@@ -96,7 +102,7 @@ export function NeuralCore({ projects }: NeuralCoreProps) {
                 <h3 className="text-[10px] font-black text-purple-400 tracking-[0.4em] uppercase mb-1">
                     Neural Intelligence
                 </h3>
-                <p className="text-xl font-black text-white tracking-tight mb-4">
+                <p className="text-xl font-black text-white tracking-tight mb-4 group-hover:text-purple-400 transition-colors">
                     Cognitive System Active
                 </p>
 
@@ -120,6 +126,11 @@ export function NeuralCore({ projects }: NeuralCoreProps) {
                         )}
                     </AnimatePresence>
                 </div>
+
+                <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity text-[10px] font-black text-purple-500 uppercase tracking-widest flex items-center justify-center gap-2">
+                    <div className="w-1 h-1 rounded-full bg-purple-500 animate-ping" />
+                    Press for Global Insights
+                </div>
             </div>
 
             {/* Interaction Indicators */}
@@ -138,6 +149,6 @@ export function NeuralCore({ projects }: NeuralCoreProps) {
                     />
                 ))}
             </div>
-        </div>
+        </motion.div>
     );
 }

@@ -33,10 +33,33 @@
 
 body {
   color: var(--text-primary);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  background: #050510;
+  font-family: inherit;
   overflow-x: hidden;
-  height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: rgba(147, 51, 234, 0.3);
+  color: #fff;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
 
 /* Utilities */
