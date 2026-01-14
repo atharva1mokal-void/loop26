@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { StatsCard } from '@/components/StatsCard';
 import { VelocityChart } from '@/components/VelocityChart';
 import { NeuralCore } from '@/components/NeuralCore';
+import ChatBox from '@/components/ChatBox';
 import { HolographicField } from '@/components/HolographicField';
 import { LiveBackground } from '@/components/LiveBackground';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -21,6 +22,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [syncingId, setSyncingId] = useState<string | null>(null);
   const [showIntelligenceReport, setShowIntelligenceReport] = useState(false);
+  const [showChat, setShowChat] = useState(false);
 
   async function loadData() {
     try {
@@ -436,6 +438,47 @@ export default function Home() {
               </div>
             </motion.div>
           </div>
+        )}
+      </AnimatePresence>
+
+      {/* Floating Chat Button */}
+      <motion.button
+        whileHover={{ scale: 1.1, rotate: 5 }}
+        whileTap={{ scale: 0.9 }}
+        onClick={() => setShowChat(!showChat)}
+        className="fixed bottom-8 right-8 w-16 h-16 bg-blue-600 text-white rounded-2xl flex items-center justify-center shadow-2xl shadow-blue-500/40 z-[110] border-2 border-white/20"
+      >
+        {showChat ? <X size={28} /> : <MessageSquare size={28} />}
+        {!showChat && (
+          <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full border-2 border-[#050510] animate-bounce" />
+        )}
+      </motion.button>
+
+      {/* Mini Chat Widget */}
+      <AnimatePresence>
+        {showChat && (
+          <motion.div
+            initial={{ opacity: 0, y: 100, scale: 0.8, filter: 'blur(10px)' }}
+            animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
+            exit={{ opacity: 0, y: 100, scale: 0.8, filter: 'blur(10px)' }}
+            className="fixed bottom-28 right-8 w-96 h-[500px] z-[110] glass-panel rounded-3xl overflow-hidden border border-white/10 shadow-2xl flex flex-col"
+          >
+            <div className="p-4 bg-blue-600 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center">
+                  <MessageSquare size={16} className="text-white" />
+                </div>
+                <span className="font-bold text-white text-sm uppercase tracking-widest">Nexus Chat</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+                <span className="text-[10px] text-white/70 font-bold">ONLINE</span>
+              </div>
+            </div>
+            <div className="flex-1 overflow-hidden">
+              <ChatBox isWidget={true} />
+            </div>
+          </motion.div>
         )}
       </AnimatePresence>
     </main>

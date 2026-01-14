@@ -3,10 +3,12 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Zap, Layout, FileText, Settings, X } from 'lucide-react';
+import { usePathname } from 'next/navigation';
 
 export function CommandPalette() {
     const [isOpen, setIsOpen] = useState(false);
     const [query, setQuery] = useState('');
+    const pathname = usePathname();
 
     useEffect(() => {
         const down = (e: KeyboardEvent) => {
@@ -18,6 +20,8 @@ export function CommandPalette() {
         document.addEventListener('keydown', down);
         return () => document.removeEventListener('keydown', down);
     }, []);
+
+    if (pathname === '/login') return null;
 
     const commands = [
         { title: 'Create new task', icon: <Zap className="w-4 h-4" />, shortcut: 'C' },

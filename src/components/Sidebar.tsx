@@ -1,20 +1,30 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Home, Activity, Layers, Settings, ChevronRight, Zap, Target } from 'lucide-react';
+import { Home, Activity, Layers, Settings, ChevronRight, Zap, Target, LogOut, MessageSquare } from 'lucide-react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 const menuItems = [
     { icon: Home, label: 'Dashboard', href: '/' },
     { icon: Activity, label: 'Insights', href: '/insights' },
     { icon: Layers, label: 'Projects', href: '/projects' },
+    { icon: MessageSquare, label: 'Team Chat', href: '/chat' },
 ];
 
 export function Sidebar() {
     const [isOpen, setIsOpen] = useState(true);
     const pathname = usePathname();
+    const router = useRouter();
+
+    if (pathname === '/login') return null;
+
+    const handleLogout = () => {
+        localStorage.removeItem('currentUser');
+        document.cookie = "session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+        router.push('/login');
+    };
 
     return (
         <motion.aside
@@ -56,8 +66,8 @@ export function Sidebar() {
                                 whileHover={{ x: 4 }}
                                 whileTap={{ scale: 0.98 }}
                                 className={`flex items-center p-4 rounded-2xl transition-all duration-300 group cursor-pointer relative overflow-hidden ${isActive
-                                        ? 'bg-blue-600 text-white shadow-xl shadow-blue-500/30'
-                                        : 'text-slate-500 hover:text-white'
+                                    ? 'bg-blue-600 text-white shadow-xl shadow-blue-500/30'
+                                    : 'text-slate-500 hover:text-white'
                                     }`}
                             >
                                 <item.icon
@@ -87,7 +97,17 @@ export function Sidebar() {
             </nav>
 
             {/* Bottom Section */}
-            <div className="p-6 space-y-8">
+            <div className="p-6 space-y-4">
+                <button
+                    onClick={handleLogout}
+                    className="w-full flex items-center gap-4 p-2 rounded-xl hover:bg-red-500/10 text-slate-500 hover:text-red-400 transition-all group"
+                >
+                    <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-red-500/20 transition-all">
+                        <LogOut size={18} />
+                    </div>
+                    {isOpen && <span className="text-sm font-bold tracking-tight">Logout</span>}
+                </button>
+
                 <Link href="/admin">
                     <div className="flex items-center gap-4 text-slate-500 hover:text-white cursor-pointer transition-colors group">
                         <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center font-black group-hover:bg-blue-600/20 group-hover:text-blue-400 transition-all">

@@ -1,13 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { Lock, User, Terminal, Check } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
-export default function LoginPage() {
-    const [email, setEmail] = useState('');
+function LoginForm() {
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
@@ -20,42 +20,44 @@ export default function LoginPage() {
         }
     }, [searchParams]);
 
-    const handleLogin = (e: React.FormEvent) => {
+    const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
 
-        const users = JSON.parse(localStorage.getItem('users') || '[]');
-        const user = users.find((u: any) => u.email === email);
+        let session = null;
+        if (username === 'RedVoid' && password === 'lead01') {
+            session = {
+                userId: 'admin-01',
+                username: 'RedVoid',
+                email: 'admin@nexus.com',
+                role: 'admin',
+                fullName: 'RedVoid Administrator',
+                avatar: null
+            };
+        } else if (username === 'Nexus26' && password === 'Team01') {
+            session = {
+                userId: 'team-01',
+                username: 'Nexus26',
+                email: 'team@nexus.com',
+                role: 'team',
+                fullName: 'Nexus Team',
+                avatar: null
+            };
+        }
 
-        if (!user) {
-            setError('Account not found');
+        if (session) {
+            localStorage.setItem('currentUser', JSON.stringify(session));
+            document.cookie = `session=${JSON.stringify(session)}; path=/; max-age=86400`;
+
+            if (session.role === 'admin') {
+                router.push('/admin');
+            } else {
+                router.push('/');
+            }
             return;
         }
 
-        // Simple password check (in production, verify hash)
-        if (!user.password.includes(password) && password.length < 3) {
-            setError('Invalid password');
-            return;
-        }
-
-        // Create session
-        const session = {
-            userId: user.id,
-            username: user.username,
-            email: user.email,
-            role: user.role,
-            fullName: user.fullName,
-            avatar: user.avatar
-        };
-
-        localStorage.setItem('currentUser', JSON.stringify(session));
-
-        // Redirect based on role
-        if (user.role === 'admin') {
-            router.push('/admin');
-        } else {
-            router.push('/dashboard');
-        }
+        setError('Invalid credentials');
     };
 
     return (
@@ -91,15 +93,15 @@ export default function LoginPage() {
                 <form onSubmit={handleLogin} className="space-y-6">
                     <div className="space-y-2">
                         <label className="flex items-center gap-2 text-sm font-mono text-[var(--neon-cyan)] uppercase">
-                            <User className="w-4 h-4" /> Email
+                            <User className="w-4 h-4" /> Username
                         </label>
                         <input
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            type="text"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
                             required
                             className="w-full bg-[var(--surface-1)] border border-[var(--glass-border)] rounded-lg p-3 text-white outline-none focus:border-[var(--neon-cyan)] transition-colors"
-                            placeholder="your@email.com"
+                            placeholder="Enter Username"
                         />
                     </div>
 
@@ -149,5 +151,13 @@ export default function LoginPage() {
                 </div>
             </motion.div>
         </div>
+    );
+}
+
+export default function LoginPage() {
+    return (
+        <Suspense fallback={null}>
+            <LoginForm />
+        </Suspense>
     );
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { addTask } from '@/lib/actions';
+import { addTask } from '@/app/actions';
 import { motion } from 'framer-motion';
 import { Plus, Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
